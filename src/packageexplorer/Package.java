@@ -18,6 +18,7 @@ public class Package {
     private ArrayList<String> dependencies;
     private ArrayList<String> revDependencies;
 
+    
     public Package() {
         dependencies = new ArrayList<>();
         description = new ArrayList<>();
@@ -83,5 +84,9 @@ public class Package {
     public void printName() {
         System.out.println(name);
     }
+    public ArrayList<String> getRevDependencies() {
+        return revDependencies;
+    }
+
 
 }

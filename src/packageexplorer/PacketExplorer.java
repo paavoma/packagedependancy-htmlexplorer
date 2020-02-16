@@ -8,6 +8,7 @@ package packageexplorer;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
@@ -23,6 +24,7 @@ import javafx.stage.Stage;
  * @author crazm_000
  */
 public class PacketExplorer extends Application {
+    
 
     @Override
     public void start(Stage primaryStage) {
@@ -35,6 +37,9 @@ public class PacketExplorer extends Application {
                 
                 ParserInterface parser = new Parser();
                 parser.readFile("src/packageexplorer/status.real");
+                HtmlBuilderInterface htmlBuilder= new HtmlBuilder();
+                ArrayList<Package> packages=parser.getPackages();
+                htmlBuilder.buildPackagePage(packages.get(1));
                 
 
             }

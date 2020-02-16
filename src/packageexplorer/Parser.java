@@ -45,18 +45,19 @@ public class Parser implements ParserInterface {
         }
         for (Package p : packages) {
             p.buildReverseDependencies(packages);
-            
+
         }
         for (Package p : packages) {
-            
+            /*
             System.out.println("Package name: ");
             System.out.println(p.getName());
             System.out.println("Depends: ");
             p.printDependencies();
             System.out.println("Reverse dependencies: ");
             p.printReverseDependencies();
-            //System.out.println("Description: ");
-            //p.printDescription();
+            System.out.println("Description: ");
+            p.printDescription();
+            */
         }
 
     }
@@ -126,6 +127,11 @@ public class Parser implements ParserInterface {
             Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+    }
+
+    @Override
+    public ArrayList<Package> getPackages() {
+        return packages;
     }
 
 }

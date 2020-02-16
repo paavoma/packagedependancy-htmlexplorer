@@ -6,6 +6,7 @@
 package packageexplorer;
 
 import java.io.BufferedReader;
+import java.util.ArrayList;
 
 /**
  *
@@ -15,6 +16,7 @@ public interface ParserInterface {
     
     public void readFile(String filepath);
     public void parseLine(String line, BufferedReader reader);
+    public ArrayList<Package> getPackages();
 
    
     
