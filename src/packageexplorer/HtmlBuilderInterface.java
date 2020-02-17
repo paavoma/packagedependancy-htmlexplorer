@@ -6,6 +6,7 @@
 package packageexplorer;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  *
@@ -23,6 +24,8 @@ public interface HtmlBuilderInterface {
     public String insertParagraph(String stringToBeEnclosed);
     public boolean insertDescription(ArrayList<String> description);
     public void insertHtmlAndBodyTags();
+    
+    public void writeHtmlFile(LinkedList<String> htmlCodeLines, String htmlFileName);
     
     public String insertLink(String packageNameToLink);
     public String generateHtmlFileName(String packageName);

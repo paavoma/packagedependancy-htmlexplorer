@@ -34,7 +34,6 @@ public class Parser implements ParserInterface {
             reader = new BufferedReader(new FileReader(filepath));
             String line = reader.readLine();
             while (line != null) {
-                //System.out.println(line);
                 // read next line
                 parseLine(line, reader);
                 line = reader.readLine();
@@ -47,18 +46,7 @@ public class Parser implements ParserInterface {
             p.buildReverseDependencies(packages);
 
         }
-        for (Package p : packages) {
-            /*
-            System.out.println("Package name: ");
-            System.out.println(p.getName());
-            System.out.println("Depends: ");
-            p.printDependencies();
-            System.out.println("Reverse dependencies: ");
-            p.printReverseDependencies();
-            System.out.println("Description: ");
-            p.printDescription();
-            */
-        }
+        
 
     }
 
@@ -80,7 +68,8 @@ public class Parser implements ParserInterface {
             if (line.contains("Depends: ")) {
                 lineToAdd = line.split("Depends: ");
                 if (lineToAdd.length >= 2) {
-                    lineToAdd = lineToAdd[1].split(", ");
+                    //lineToAdd = lineToAdd[1].split(", ");
+                    lineToAdd = lineToAdd[1].split("[,] |[|]");
                     //System.out.println("Depends: ");
                     int i = 0;
                     while (lineToAdd.length > i) {

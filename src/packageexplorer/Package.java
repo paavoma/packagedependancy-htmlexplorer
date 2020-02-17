@@ -11,6 +11,8 @@ import java.util.ArrayList;
  *
  * @author crazm_000
  */
+
+//This class stores 
 public class Package {
 
     private String name;

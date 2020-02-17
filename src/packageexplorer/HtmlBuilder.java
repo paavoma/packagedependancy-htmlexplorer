@@ -5,6 +5,10 @@
  */
 package packageexplorer;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -27,8 +31,9 @@ public class HtmlBuilder implements HtmlBuilderInterface {
     }
 
     @Override
+    //luo yhden packagen html sivun
     public boolean buildPackagePage(Package pack) {
-        
+        String pageName=generateHtmlFileName(pack.getName());
         htmlCodeLines = new LinkedList<>();
         
         htmlCodeLines.add(insertHeadingTag(pack.getName()));
@@ -39,7 +44,7 @@ public class HtmlBuilder implements HtmlBuilderInterface {
         htmlCodeLines.add(insertParagraph("Description: "));
         insertDescription(pack.getDescription());
         insertHtmlAndBodyTags();
-           
+        writeHtmlFile(htmlCodeLines, pageName);
         
         for (String line : htmlCodeLines) {
             System.out.println(line);
@@ -98,7 +103,38 @@ public class HtmlBuilder implements HtmlBuilderInterface {
         htmlCodeLines.add("</html>");
     }
 
-    
+    @Override
+    public void writeHtmlFile(LinkedList<String> htmlCodeLines, String pageName) {
+        boolean fileCreateSuccesful=false;
+        String filepath="C:\\Koodiprojektit\\PackageInfoExplorer\\html\\" + pageName;
+        File fileToWrite = new File(filepath);
+        FileWriter fr = null;
+        BufferedWriter br = null;
+        String dataLine=htmlCodeLines.get(0)+System.getProperty("line.separator");
+        try{
+            fileCreateSuccesful=fileToWrite.createNewFile();
+        }catch(IOException ioe){
+            System.out.println("Error while Creating File" + ioe);
+        }
+        try{
+            
+            fr = new FileWriter(fileToWrite);
+            br = new BufferedWriter(fr);
+            for(String line: htmlCodeLines){
+                br.write(line+System.getProperty("line.separator"));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally{
+            try {
+                br.close();
+                fr.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        
+    }
 
     @Override
     public boolean insertListTag(String stringToBeEnclosed) {
@@ -124,6 +160,8 @@ public class HtmlBuilder implements HtmlBuilderInterface {
     public String insertParagraph(String stringToBeEnclosed) {
         return insertTag(stringToBeEnclosed, "p");
     }
+
+    
 
     
 

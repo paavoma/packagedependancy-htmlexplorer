@@ -24,7 +24,6 @@ import javafx.stage.Stage;
  * @author crazm_000
  */
 public class PacketExplorer extends Application {
-    
 
     @Override
     public void start(Stage primaryStage) {
@@ -34,13 +33,14 @@ public class PacketExplorer extends Application {
 
             @Override
             public void handle(ActionEvent event) {
-                
+
                 ParserInterface parser = new Parser();
                 parser.readFile("src/packageexplorer/status.real");
-                HtmlBuilderInterface htmlBuilder= new HtmlBuilder();
-                ArrayList<Package> packages=parser.getPackages();
-                htmlBuilder.buildPackagePage(packages.get(1));
-                
+                HtmlBuilderInterface htmlBuilder = new HtmlBuilder();
+                ArrayList<Package> packages = parser.getPackages();
+                for (Package p : packages) {
+                    htmlBuilder.buildPackagePage(p);
+                }
 
             }
 
