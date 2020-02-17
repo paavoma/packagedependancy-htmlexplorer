@@ -46,7 +46,6 @@ public class Parser implements ParserInterface {
             p.buildReverseDependencies(packages);
 
         }
-        
 
     }
 
@@ -64,8 +63,8 @@ public class Parser implements ParserInterface {
                     //System.out.println("Package name: " + attribute[1]);
                 }
             }
-
-            if (line.contains("Depends: ")) {
+            
+            if (line.contains("Depends: ") && !line.contains("Pre-Depends: ")) {
                 lineToAdd = line.split("Depends: ");
                 if (lineToAdd.length >= 2) {
                     //lineToAdd = lineToAdd[1].split(", ");

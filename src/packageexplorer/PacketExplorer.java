@@ -36,11 +36,9 @@ public class PacketExplorer extends Application {
 
                 ParserInterface parser = new Parser();
                 parser.readFile("src/packageexplorer/status.real");
-                HtmlBuilderInterface htmlBuilder = new HtmlBuilder();
+                HtmlBuilderInterface htmlBuilder = new HtmlBuilder(parser.getPackages());
                 ArrayList<Package> packages = parser.getPackages();
-                for (Package p : packages) {
-                    htmlBuilder.buildPackagePage(p);
-                }
+                htmlBuilder.buildAllHtmlPages(packages);
 
             }
 
