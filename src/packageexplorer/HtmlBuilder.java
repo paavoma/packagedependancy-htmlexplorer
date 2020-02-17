@@ -170,7 +170,7 @@ public class HtmlBuilder implements HtmlBuilderInterface {
         htmlCodeLines.add(this.insertHeadingTag("Index page"));
         htmlCodeLines.add("<ol>");
         for(Package p: packages){
-            htmlCodeLines.add(this.insertTag(this.insertLink(this.generateHtmlFileName(p.getName())), "li"));
+            htmlCodeLines.add(this.insertTag(this.insertLink(p.getName()), "li"));
         }
         htmlCodeLines.add("</ol>");
         insertHtmlAndBodyTags();
