@@ -42,6 +42,7 @@ public class Parser implements ParserInterface {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        //builds reverse dependencies for packages
         for (Package p : packages) {
             p.buildReverseDependencies(packages);
 
@@ -64,7 +65,7 @@ public class Parser implements ParserInterface {
                 }
             }
             
-            if (line.contains("Depends: ") && !line.contains("Pre-Depends: ")) {
+            else if (line.contains("Depends: ") && !line.contains("Pre-Depends: ")) {
                 lineToAdd = line.split("Depends: ");
                 if (lineToAdd.length >= 2) {
                     //lineToAdd = lineToAdd[1].split(", ");
@@ -85,7 +86,7 @@ public class Parser implements ParserInterface {
 
             }
 
-            if (line.contains("Description: ")) {
+            else if (line.contains("Description: ")) {
                 lineToAdd = line.split("Description: ");
 
                 if (lineToAdd.length == 2) {
@@ -98,7 +99,7 @@ public class Parser implements ParserInterface {
                 if (line.trim().length() > 0) {
                     firstletter = line.charAt(0);
                 }
-                while (firstletter == ' ') {
+                while (firstletter == ' ' && line.length()>1) {
                     p.addDescription(line);
                     //System.out.println(line);
                     line = reader.readLine();

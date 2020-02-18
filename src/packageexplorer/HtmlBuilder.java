@@ -5,11 +5,14 @@
  */
 package packageexplorer;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 
 /**
@@ -19,6 +22,7 @@ import java.util.LinkedList;
 public class HtmlBuilder implements HtmlBuilderInterface {
 
     private LinkedList<String> htmlCodeLines;
+    private LinkedList<String> cssCodeLines;
     private ArrayList<Package> packages;
 
     //konstruktoriin packages arraylist
@@ -28,8 +32,10 @@ public class HtmlBuilder implements HtmlBuilderInterface {
 
     @Override
     public boolean buildAllHtmlPages(ArrayList<Package> packages) {
+        this.cssCodeLines=loadDefaultCss();
+        this.writeHtmlFile(cssCodeLines, "defaultStyle.css");
         this.buildIndexPage();
-        for(Package p: packages){
+        for (Package p : packages) {
             this.buildPackagePage(p);
         }
         return true;
@@ -40,35 +46,49 @@ public class HtmlBuilder implements HtmlBuilderInterface {
     public boolean buildPackagePage(Package pack) {
         String pageName = generateHtmlFileName(pack.getName());
         htmlCodeLines = new LinkedList<>();
-
-        htmlCodeLines.add(insertHeadingTag(pack.getName()));
-        htmlCodeLines.add(insertParagraph("Depends: "));
+        
+        htmlCodeLines.add(insertHeadingTagThree(insertLink("index")));
+        htmlCodeLines.add(insertHeadingTagOne(pack.getName()));
+        htmlCodeLines.add(insertHeadingTagTwo("Depends: "));
         insertDependancyList(pack.getDependencies());
-        htmlCodeLines.add(insertParagraph("Reverse dependencies: "));
+        htmlCodeLines.add(insertHeadingTagTwo("Reverse dependencies: "));
         insertRevDependancyList(pack.getRevDependencies());
-        htmlCodeLines.add(insertParagraph("Description: "));
+        htmlCodeLines.add(insertHeadingTagTwo("Description: "));
         insertDescription(pack.getDescription());
+        insertDiv();
         insertHtmlAndBodyTags();
         writeHtmlFile(htmlCodeLines, pageName);
-
+        /*
         for (String line : htmlCodeLines) {
             System.out.println(line);
         }
+         */
 
         return true;
 
     }
-
+    private void insertDiv(){
+        htmlCodeLines.addFirst("<div class=\"right\">");
+        htmlCodeLines.add("</div>");
+    }
     @Override
     public String insertTag(String stringToBeEnclosed, String htmlTag) {
         String htmlLine = "<" + htmlTag + ">" + stringToBeEnclosed + "</" + htmlTag + ">";
         return htmlLine;
     }
 
-    @Override
-    public String insertHeadingTag(String stringToBeEnclosed) {
+    
+    public String insertHeadingTagOne(String stringToBeEnclosed) {
 
         return insertTag(stringToBeEnclosed, "h1");
+    }
+    private String insertHeadingTagTwo(String stringToBeEnclosed) {
+
+        return insertTag(stringToBeEnclosed, "h2");
+    }
+    private String insertHeadingTagThree(String stringToBeEnclosed) {
+
+        return insertTag(stringToBeEnclosed, "h3");
     }
 
     @Override
@@ -77,30 +97,31 @@ public class HtmlBuilder implements HtmlBuilderInterface {
         boolean foundPackage = false;
         htmlCodeLines.add("<ol>");
         for (String dependancy : dependencies) {
-            
-            foundPackage=checkIfDependancyIsPackage(dependancy);
-            
+
+            foundPackage = checkIfDependancyIsPackage(dependancy);
+
             if (foundPackage == false) {
                 htmlCodeLines.add(insertTag(dependancy, "li"));
-            }else{
+            } else {
                 htmlCodeLines.add(insertTag(insertLink(dependancy), "li"));
             }
-            foundPackage =false;
+            foundPackage = false;
         }
         htmlCodeLines.add("</ol>");
         return true;
 
     }
-    private boolean checkIfDependancyIsPackage(String dependancy){
-        
+
+    private boolean checkIfDependancyIsPackage(String dependancy) {
+
         for (Package p : packages) {
-                String packageName = p.getName();
-                if (packageName.equals(dependancy)) {
-                    return true;
-                    //System.out.println("found dependancy!!!!!");
-                }
-               
+            String packageName = p.getName();
+            if (packageName.equals(dependancy)) {
+                return true;
+                //System.out.println("found dependancy!!!!!");
             }
+
+        }
         return false;
     }
 
@@ -125,7 +146,13 @@ public class HtmlBuilder implements HtmlBuilderInterface {
     @Override
     public void insertHtmlAndBodyTags() {
         htmlCodeLines.addFirst("<body>");
+        htmlCodeLines.addFirst("</head>");
+        htmlCodeLines.addFirst("<link rel=\"stylesheet\" type=\"text/css\" href=\"defaultStyle.css\">");
+        htmlCodeLines.addFirst("<head>");
+        
         htmlCodeLines.addFirst("<html>");
+        
+        
         htmlCodeLines.addFirst("<!DOCTYPE html>");
         htmlCodeLines.add("</body>");
         htmlCodeLines.add("</html>");
@@ -138,7 +165,7 @@ public class HtmlBuilder implements HtmlBuilderInterface {
         File fileToWrite = new File(filepath);
         FileWriter fr = null;
         BufferedWriter br = null;
-        String dataLine = htmlCodeLines.get(0) + System.getProperty("line.separator");
+
         try {
             fileCreateSuccesful = fileToWrite.createNewFile();
         } catch (IOException ioe) {
@@ -163,16 +190,27 @@ public class HtmlBuilder implements HtmlBuilderInterface {
         }
 
     }
-    
-    private void buildIndexPage(){
+
+    //Sorts packages alphabetically and builds index.html page
+    private void buildIndexPage() {
+        //loads up package names
         htmlCodeLines = new LinkedList<>();
+        ArrayList<String> packageNames = new ArrayList<>();
+
+        for (Package p : packages) {
+            packageNames.add(p.getName());
+        }
+        //sorts the names alphabetically
+        Collections.sort(packageNames);
         
-        htmlCodeLines.add(this.insertHeadingTag("Index page"));
+        
+        htmlCodeLines.add(this.insertHeadingTagOne("Index page"));
         htmlCodeLines.add("<ol>");
-        for(Package p: packages){
-            htmlCodeLines.add(this.insertTag(this.insertLink(p.getName()), "li"));
+        for (String packageName : packageNames) {
+            htmlCodeLines.add(this.insertTag(this.insertLink(packageName), "li"));
         }
         htmlCodeLines.add("</ol>");
+        insertDiv();
         insertHtmlAndBodyTags();
         writeHtmlFile(htmlCodeLines, "index.html");
     }
@@ -200,6 +238,29 @@ public class HtmlBuilder implements HtmlBuilderInterface {
     @Override
     public String insertParagraph(String stringToBeEnclosed) {
         return insertTag(stringToBeEnclosed, "p");
+    }
+
+    private LinkedList<String> loadDefaultCss() {
+        LinkedList<String> cssCodeLines = new LinkedList<>();
+        BufferedReader reader;
+        try {
+            reader = new BufferedReader(new FileReader(
+                    "src/main/resources/defaultStyle.css"));
+            String line = reader.readLine();
+            while (line != null) {
+                cssCodeLines.add(line);
+                line = reader.readLine();
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return cssCodeLines;
+    }
+
+    @Override
+    public String insertHeadingTag(String stringToBeEnclosed) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

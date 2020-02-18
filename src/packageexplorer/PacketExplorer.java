@@ -49,7 +49,7 @@ public class PacketExplorer extends Application {
 
         Scene scene = new Scene(root, 300, 250);
 
-        primaryStage.setTitle("Hello World!");
+        primaryStage.setTitle("Package Explorer");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
