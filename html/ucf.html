@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="defaultStyle.css">
+</head>
+<body>
+<div class="right">
+<h3><a href='index.html'>index</a></h3>
+<h1>ucf</h1>
+<h2>Depends: </h2>
+<ol>
+<li><a href='debconf.html'>debconf</a></li>
+<li><a href='coreutils.html'>coreutils</a></li>
+</ol>
+<h2>Reverse dependencies: </h2>
+<ol>
+<li><a href='tomcat6.html'>tomcat6</a></li>
+<li><a href='ufw.html'>ufw</a></li>
+<li><a href='grub-pc.html'>grub-pc</a></li>
+<li><a href='fontconfig-config.html'>fontconfig-config</a></li>
+<li><a href='rsyslog.html'>rsyslog</a></li>
+</ol>
+<h2>Description: </h2>
+<p>Update Configuration File: preserve user changes to config files.</p>
+<p> Debian policy mandates that user changes to configuration files must be</p>
+<p> preserved during package upgrades. The easy way to achieve this behavior</p>
+<p> is to make the configuration file a 'conffile', in which case dpkg</p>
+<p> handles the file specially during upgrades, prompting the user as</p>
+<p> needed.</p>
+<p> .</p>
+<p> This is appropriate only if it is possible to distribute a default</p>
+<p> version that will work for most installations, although some system</p>
+<p> administrators may choose to modify it. This implies that the</p>
+<p> default version will be part of the package distribution, and must</p>
+<p> not be modified by the maintainer scripts during installation (or at</p>
+<p> any other time).</p>
+<p> .</p>
+<p> This script attempts to provide conffile-like handling for files that</p>
+<p> may not be labelled conffiles, and are not shipped in a Debian package,</p>
+<p> but handled by the postinst instead. This script allows one to</p>
+<p> maintain files in /etc, preserving user changes and in general</p>
+<p> offering the same facilities while upgrading that dpkg normally</p>
+<p> provides for 'conffiles'.</p>
+<p> .</p>
+<p> Additionally, this script provides facilities for transitioning a</p>
+<p> file that had not been provided with conffile-like protection to come</p>
+<p> under this schema, and attempts to minimize questions asked at</p>
+<p> installation time. Indeed, the transitioning facility is better than the</p>
+<p> one offered by dpkg while transitioning a file from a non-conffile to</p>
+<p> conffile status.</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="defaultStyle.css">
+</head>
+<body>
+<div class="right">
+<h3><a href='index.html'>index</a></h3>
+<h1>libexporter-lite-perl</h1>
+<h2>Depends: </h2>
+<ol>
+<li><a href='perl.html'>perl</a></li>
+</ol>
+<h2>Reverse dependencies: </h2>
+<ol>
+<li><a href='libparse-debcontrol-perl.html'>libparse-debcontrol-perl</a></li>
+</ol>
+<h2>Description: </h2>
+<p>lightweight subset of Exporter</p>
+<p> Exporter::Lite is an alternative to Exporter intended to provide a</p>
+<p> lightweight subset of its functionality.  It supports import(), @EXPORT and</p>
+<p> @EXPORT_OK and not a whole lot else.</p>
+<p> .</p>
+<p> Unlike Exporter, it is not necessary to inherit from Exporter::Lite</p>
+<p> (ie. no @ISA = qw(Exporter::Lite) mantra).  Exporter::Lite simply</p>
+<p> exports its import() function.  This might be called a "mix-in".</p>
+<p> .</p>
+<p> Setting up a module to export its variables and functions is simple:</p>
+<p> .</p>
+<p> package My::Module;</p>
+<p> use Exporter::Lite;</p>
+<p> .</p>
+<p> @EXPORT = qw($Foo bar);</p>
+</div>
+</body>
+</html>

@@ -5,33 +5,48 @@
  */
 package packageexplorer;
 
+import java.awt.Desktop;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author crazm_000
  */
 public class HtmlBuilder implements HtmlBuilderInterface {
-
+    
+    private String filePath="";
     private LinkedList<String> htmlCodeLines;
     private LinkedList<String> cssCodeLines;
     private ArrayList<Package> packages;
 
-    //konstruktoriin packages arraylist
-    public HtmlBuilder(ArrayList<Package> packages) {
-        this.packages = packages;
+   
+    public HtmlBuilder() {
+        
     }
 
     @Override
     public boolean buildAllHtmlPages(ArrayList<Package> packages) {
+        this.generateFilePath();
+        try {
+            Files.createDirectories(Paths.get(filePath));
+        } catch (IOException ex) {
+            Logger.getLogger(HtmlBuilder.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        this.packages=packages;
         this.cssCodeLines=loadDefaultCss();
         this.writeHtmlFile(cssCodeLines, "defaultStyle.css");
         this.buildIndexPage();
@@ -58,11 +73,7 @@ public class HtmlBuilder implements HtmlBuilderInterface {
         insertDiv();
         insertHtmlAndBodyTags();
         writeHtmlFile(htmlCodeLines, pageName);
-        /*
-        for (String line : htmlCodeLines) {
-            System.out.println(line);
-        }
-         */
+       
 
         return true;
 
@@ -160,14 +171,17 @@ public class HtmlBuilder implements HtmlBuilderInterface {
 
     @Override
     public void writeHtmlFile(LinkedList<String> htmlCodeLines, String pageName) {
-        boolean fileCreateSuccesful = false;
-        String filepath = "C:\\Koodiprojektit\\PackageInfoExplorer\\html\\" + pageName;
+        
+        //String filepath = "C:\\Koodiprojektit\\PackageInfoExplorer\\html\\" + pageName;
+        
+        String filepath = this.filePath + pageName;
+        
         File fileToWrite = new File(filepath);
         FileWriter fr = null;
         BufferedWriter br = null;
 
         try {
-            fileCreateSuccesful = fileToWrite.createNewFile();
+            fileToWrite.createNewFile();
         } catch (IOException ioe) {
             System.out.println("Error while Creating File" + ioe);
         }
@@ -215,10 +229,7 @@ public class HtmlBuilder implements HtmlBuilderInterface {
         writeHtmlFile(htmlCodeLines, "index.html");
     }
 
-    @Override
-    public boolean insertListTag(String stringToBeEnclosed) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+   
 
     @Override
     public String insertLink(String packageNameToLink) {
@@ -245,7 +256,7 @@ public class HtmlBuilder implements HtmlBuilderInterface {
         BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader(
-                    "src/main/resources/defaultStyle.css"));
+                    "defaultStyle.css"));
             String line = reader.readLine();
             while (line != null) {
                 cssCodeLines.add(line);
@@ -258,9 +269,38 @@ public class HtmlBuilder implements HtmlBuilderInterface {
         return cssCodeLines;
     }
 
-    @Override
-    public String insertHeadingTag(String stringToBeEnclosed) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    
+    
+    public void isOperatingSystemDebian(){
+        if(PacketExplorer.PROJECTPATH.charAt(0) == '/'){
+            PacketExplorer.ISDEBIAN=true;
+        }else{
+            PacketExplorer.ISDEBIAN=false;
+        }
+        
+    }
+
+    private void generateFilePath() {
+        if(PacketExplorer.ISDEBIAN){
+            filePath=System.getProperty("user.dir") + "/html/";
+        }else{
+        filePath=System.getProperty("user.dir") + "\\html\\";
+        }
+    }
+    public void openIndexPageWithBrowser() throws URISyntaxException, IOException{
+        //pitää kääntää ur
+        String filepathToOpen = filePath + "index.html";
+        File file=new File(filepathToOpen);
+        URI path=file.toURI();
+
+        if (Desktop.isDesktopSupported()) {
+            // Windows
+            Desktop.getDesktop().browse(path);
+        } else {
+            // Ubuntu
+            Runtime runtime = Runtime.getRuntime();
+            runtime.exec("/usr/bin/firefox -new-window " + filepathToOpen);
+        }
     }
 
 }

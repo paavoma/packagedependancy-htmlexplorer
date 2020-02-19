@@ -5,6 +5,8 @@
  */
 package packageexplorer;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -17,10 +19,8 @@ public interface HtmlBuilderInterface {
     public boolean buildAllHtmlPages(ArrayList<Package> packages);
     public boolean buildPackagePage(Package pack);
     public String insertTag(String stringToBeEnclosed, String htmlTag);
-    public String insertHeadingTag(String stringToBeEnclosed);
     public boolean insertDependancyList(ArrayList<String> dependencies);
     public boolean insertRevDependancyList(ArrayList<String> revDependencies);
-    public boolean insertListTag(String stringToBeEnclosed);
     public String insertParagraph(String stringToBeEnclosed);
     public boolean insertDescription(ArrayList<String> description);
     public void insertHtmlAndBodyTags();
@@ -29,5 +29,7 @@ public interface HtmlBuilderInterface {
     
     public String insertLink(String packageNameToLink);
     public String generateHtmlFileName(String packageName);
+    public void isOperatingSystemDebian();
+    public void openIndexPageWithBrowser() throws URISyntaxException, IOException;
     
 }
