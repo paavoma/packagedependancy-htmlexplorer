@@ -9,118 +9,136 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
- *
- * @author crazm_000
+ * This class reads a file and parses key information out of it. Forms a list of
+ * Package's which is used to generate the html-pages in HtmlBuilder class
+ * 
+ * @author Paavo Mattila
  */
 public class Parser implements ParserInterface {
 
-    private Package p;
-    private String line;
-    private BufferedReader reader;
-    private ArrayList<Package> packages;
+	private Package packageToIterate;
+	private BufferedReader reader;
+	private ArrayList<Package> packages;
 
-    public Parser() {
-        String line = null;
-        packages = new ArrayList<Package>();
-    }
+	/**
+	 * This is the default contructor for the class
+	 */
+	public Parser() {
+		packages = new ArrayList<Package>();
+	}
 
-    public void readFile(String filepath) {
-        BufferedReader reader;
-        try {
-            reader = new BufferedReader(new FileReader(filepath));
-            String line = reader.readLine();
-            while (line != null) {
-                // read next line
-                parseLine(line, reader);
-                line = reader.readLine();
-            }
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        //builds reverse dependencies for packages
-        for (Package p : packages) {
-            p.buildReverseDependencies(packages);
+	/**
+	 * This method reads a file in a given filepath
+	 * 
+	 */
+	public void readFile(String filepath) {
 
-        }
+		try {
+			reader = new BufferedReader(new FileReader(filepath));
+			String line = reader.readLine();
+			while (line != null) {
 
-    }
+				parseLine(line, reader);
+				line = reader.readLine();
+			}
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
-    @Override
-    public void parseLine(String line, BufferedReader reader) {
-        try {
+	}
 
-            String[] lineToAdd = null;
-            if (line.contains("Package: ")) {
-                p = new Package();
-                packages.add(p);
-                lineToAdd = line.split("Package: ");
-                if (lineToAdd.length == 2) {
-                    p.setName(lineToAdd[1]);
-                    //System.out.println("Package name: " + attribute[1]);
-                }
-            }
-            
-            else if (line.contains("Depends: ") && !line.contains("Pre-Depends: ")) {
-                lineToAdd = line.split("Depends: ");
-                if (lineToAdd.length >= 2) {
-                    //lineToAdd = lineToAdd[1].split(", ");
-                    lineToAdd = lineToAdd[1].split("[,] |[|]");
-                    //System.out.println("Depends: ");
-                    int i = 0;
-                    while (lineToAdd.length > i) {
-                        //karsii versionumeron perästä
-                        int index = lineToAdd[i].indexOf(" ");
-                        if (index > 0) {
-                            lineToAdd[i] = lineToAdd[i].substring(0, index);
-                        }
-                        p.addDependency(lineToAdd[i]);
-                        //System.out.println(attribute[i]);
-                        i++;
-                    }
-                }
+	/**
+	 * This method builds reverse dependencies for all packages in the list
+	 */
+	public void buildAllReverseDependencies() {
+		for (Package p : packages) {
+			p.buildReverseDependencies(packages);
 
-            }
+		}
+	}
 
-            else if (line.contains("Description: ")) {
-                lineToAdd = line.split("Description: ");
+	/**
+	 * This method goes through a single line on a file, and stores key information
+	 * into Package class data structure
+	 * 
+	 * @param line   a line that is to be examined for key information
+	 * @param reader the file reader that is needed to go through multiple lines
+	 *               inside one category of key information (ex. multiple lines of
+	 *               description)
+	 */
+	public void parseLine(String line, BufferedReader reader) {
 
-                if (lineToAdd.length == 2) {
+		String[] lineToAdd = null;
+		if (line.contains("Package: ")) {
+			packageToIterate = new Package();
+			packages.add(packageToIterate);
+			lineToAdd = line.split("Package: ");
+			if (lineToAdd.length == 2) {
+				packageToIterate.setName(lineToAdd[1]);
+			}
+		}
 
-                    //System.out.println("Description: " + attribute[1]);
-                    p.addDescription(lineToAdd[1]);
-                }
-                line = reader.readLine();
-                char firstletter = ' ';
-                if (line.trim().length() > 0) {
-                    firstletter = line.charAt(0);
-                }
-                while (firstletter == ' ' && line.length()>1) {
-                    p.addDescription(line);
-                    //System.out.println(line);
-                    line = reader.readLine();
+		else if (line.contains("Depends: ") && !line.contains("Pre-Depends: ")) {
+			lineToAdd = line.split("Depends: ");
+			if (lineToAdd.length >= 2) {
+				lineToAdd = lineToAdd[1].split("[,] |[|]");
+				int i = 0;
+				while (lineToAdd.length > i) {
+					int index = lineToAdd[i].indexOf(" ");
+					if (index > 0) {
+						lineToAdd[i] = lineToAdd[i].substring(0, index);
+					}
+					packageToIterate.addDependency(lineToAdd[i]);
 
-                    if (line.trim().length() > 0) {
-                        firstletter = line.charAt(0);
-                    }
+					i++;
+				}
+			}
 
-                }
+		}
 
-            }
+		else if (line.contains("Description: ")) {
+			lineToAdd = line.split("Description: ");
 
-        } catch (IOException ex) {
-            Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
-        }
+			if (lineToAdd.length == 2) {
+				packageToIterate.addDescription(lineToAdd[1]);
+			}
+			try {
+				line = reader.readLine();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			char firstletter = ' ';
+			if (line.trim().length() > 0) {
+				firstletter = line.charAt(0);
+			}
+			while (firstletter == ' ' && line.length() > 1) {
+				packageToIterate.addDescription(line);
+				try {
+					line = reader.readLine();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 
-    }
+				if (line.trim().length() > 0) {
+					firstletter = line.charAt(0);
+				}
 
-    @Override
-    public ArrayList<Package> getPackages() {
-        return packages;
-    }
+			}
+
+		}
+
+	}
+
+	/**
+	 * This method returns the list of Package class objects
+	 * 
+	 * @return returns the ArrayList of Package objects
+	 */
+	public ArrayList<Package> getPackages() {
+		return packages;
+	}
 
 }
